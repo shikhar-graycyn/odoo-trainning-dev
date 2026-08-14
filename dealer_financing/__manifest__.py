@@ -4,7 +4,7 @@
     "category": "Finance/Custom Modules",
     "version": "1.0.0",
     "author": "ODOP Trainee",
-    "maintainer": "Shikhar",
+    "maintainer": "Shikhar-GC",
     "depends": ["base"],
     "license": "OPL-1",
     "application": True,
