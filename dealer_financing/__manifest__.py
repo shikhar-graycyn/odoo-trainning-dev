@@ -6,6 +6,9 @@
     "author": "ODOP Trainee",
     "maintainer": "Shikhar-GC",
     "depends": ["product"],
+    "demo": [
+        "demo/loan_demo.xml",
+    ],
     "license": "OPL-1",
     "application": True,
 }
