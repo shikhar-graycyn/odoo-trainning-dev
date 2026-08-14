@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "author": "ODOP Trainee",
     "maintainer": "Shikhar-GC",
-    "depends": ["base"],
+    "depends": ["product"],
     "license": "OPL-1",
     "application": True,
 }
