@@ -7,6 +7,9 @@
     "maintainer": "Shikhar-GC",
     "depends": ["product"],
     "data": [
+        "security/dealer_financing_groups.xml",
+        "security/ir.model.access.csv",
+        "security/dealer_financing_security.xml",
         "views/loan_application_views.xml",
         "views/dealer_financing_menu.xml",
     ],
