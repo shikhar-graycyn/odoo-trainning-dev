@@ -6,6 +6,10 @@
     "author": "ODOP Trainee",
     "maintainer": "Shikhar-GC",
     "depends": ["product"],
+    "data": [
+        "views/loan_application_views.xml",
+        "views/dealer_financing_menu.xml",
+    ],
     "demo": [
         "demo/loan_demo.xml",
     ],
