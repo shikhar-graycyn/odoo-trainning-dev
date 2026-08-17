@@ -19,13 +19,15 @@ class LoanApplication(models.Model):
     )
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency")
     loan_amount = fields.Monetary(
-        string="Loan Amount", currency_field="currency_id"
+        string="Loan Amount", currency_field="currency_id", required=True
     )
     down_payment = fields.Monetary(
         string="Down Payment", currency_field="currency_id"
     )
     loan_term = fields.Integer(string="Term (Months)", default=36)
-    interest_rate = fields.Float(string="Interest Rate", digits=(5, 2))
+    interest_rate = fields.Float(
+        string="Interest Rate", digits=(5, 2), required=True
+    )
     date_applied = fields.Date(
         string="Application Date", default=lambda self: fields.Date.today()
     )
@@ -41,6 +43,7 @@ class LoanApplication(models.Model):
         ],
         string="Status",
         default="draft",
+        copy=False,
     )
     active = fields.Boolean(default=True)
-    notes = fields.Html(string="Internal Notes")
+    notes = fields.Html(string="Internal Notes", copy=False)
