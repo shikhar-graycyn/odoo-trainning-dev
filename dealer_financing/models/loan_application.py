@@ -17,6 +17,14 @@ class LoanApplication(models.Model):
     product_id = fields.Many2one(
         comodel_name="product.template", string="Motorcycle"
     )
+    tag_ids = fields.Many2many(
+        comodel_name="loan.application.tag", string="Tags"
+    )
+    document_ids = fields.One2many(
+        comodel_name="loan.application.document",
+        inverse_name="application_id",
+        string="Documents",
+    )
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency")
     loan_amount = fields.Monetary(
         string="Loan Amount", currency_field="currency_id", required=True

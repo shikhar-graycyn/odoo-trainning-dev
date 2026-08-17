@@ -14,4 +14,27 @@
         parent="menu_motorcycle_financing"
         action="action_loan_application"
     />
+
+    <menuitem
+        id="menu_financing_configuration"
+        name="Configuration"
+        parent="menu_financing_root"
+        groups="dealer_financing.group_dealer_financing_admin"
+    />
+
+    <menuitem
+        id="menu_loan_application_tags"
+        name="Tags"
+        parent="menu_financing_configuration"
+        action="action_loan_application_tag"
+        groups="dealer_financing.group_dealer_financing_admin"
+    />
+
+    <menuitem
+        id="menu_loan_application_document_types"
+        name="Document Types"
+        parent="menu_financing_configuration"
+        action="action_loan_application_document_type"
+        groups="dealer_financing.group_dealer_financing_admin"
+    />
 </odoo>
