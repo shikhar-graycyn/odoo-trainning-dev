@@ -28,6 +28,11 @@
                             <field name="partner_id"/>
                             <field name="user_id"/>
                             <field name="product_id"/>
+                            <field
+                                name="tag_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                            />
                         </group>
                         <group>
                             <field name="date_applied"/>
@@ -46,7 +51,13 @@
                         </group>
                     </group>
                     <group string="Internal Notes">
-                        <field name="notes" nolabel="1"/>
+                        <field
+                            name="notes"
+                            widget="html"
+                            nolabel="1"
+                            colspan="2"
+                            placeholder="Add internal notes..."
+                        />
                     </group>
                     <notebook>
                         <page string="Compliance Checklist">
@@ -86,7 +97,7 @@
                     string="Approved"
                     domain="[('state', '=', 'approved')]"
                 />
-                <group expand="0" string="Group By">
+                <group>
                     <filter
                         name="group_by_state"
                         string="State"
