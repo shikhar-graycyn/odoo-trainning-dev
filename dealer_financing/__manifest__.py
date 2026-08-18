@@ -11,7 +11,8 @@
         "security/ir.model.access.csv",
         "security/dealer_financing_security.xml",
         "views/loan_application_views.xml",
-        "views/dealer_financing_configuration_views.xml",
+        "views/loan_application_tag_views.xml",
+        "views/loan_application_document_type_views.xml",
         "views/dealer_financing_menu.xml",
     ],
     "demo": [
