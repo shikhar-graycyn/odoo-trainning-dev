@@ -34,7 +34,7 @@ class LoanApplication(models.Model):
     )
     loan_term = fields.Integer(string="Term (Months)", default=36)
     interest_rate = fields.Float(
-        string="Interest Rate", digits=(5, 2), required=True
+         digits=(5, 2), required=True
     )
     date_applied = fields.Date(
         string="Application Date", default=lambda self: fields.Date.today()
