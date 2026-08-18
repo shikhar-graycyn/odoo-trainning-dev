@@ -7,7 +7,7 @@ class LoanApplication(models.Model):
 
     name = fields.Char(string="Application Number", required=True)
     partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Customer", required=True
+        "res.partner", string="Customer", required=True
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
