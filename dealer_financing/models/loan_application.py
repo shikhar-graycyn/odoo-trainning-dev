@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class LoanApplication(models.Model):
@@ -64,6 +65,15 @@ class LoanApplication(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Html(string="Internal Notes", copy=False)
 
+    _name_unique = models.Constraint(
+        "unique(name)",
+        "Loan application reference must be unique.",
+    )
+    _principal_positive = models.Constraint(
+        "CHECK(principal_amount > 0)",
+        "Principal amount must be greater than zero.",
+    )
+
     @api.depends("principal_amount", "down_payment")
     def _compute_loan_amount(self):
         for record in self:
@@ -72,3 +82,13 @@ class LoanApplication(models.Model):
     def _inverse_loan_amount(self):
         for record in self:
             record.down_payment = record.principal_amount - record.loan_amount
+
+    @api.constrains("principal_amount", "down_payment")
+    def _check_down_payment(self):
+        for record in self:
+            if record.down_payment >= record.principal_amount:
+                raise ValidationError(
+                    self.env._(
+                        "Down payment must be less than the principal amount."
+                    )
+                )
