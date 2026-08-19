@@ -26,6 +26,8 @@
                         <group>
                             <field name="name"/>
                             <field name="partner_id"/>
+                            <field name="email"/>
+                            <field name="phone"/>
                             <field name="user_id"/>
                             <field name="product_id"/>
                             <field
@@ -37,13 +39,14 @@
                         <group>
                             <field name="date_applied"/>
                             <field name="active"/>
-                            <field name="currency_id"/>
                         </group>
                     </group>
-                    <group string="Financing Details">
+                    <group string="Financials">
+                        <field name="currency_id" invisible="1"/>
                         <group>
-                            <field name="loan_amount"/>
-                            <field name="down_payment"/>
+                            <field name="principal_amount" widget="monetary"/>
+                            <field name="down_payment" widget="monetary"/>
+                            <field name="loan_amount" widget="monetary"/>
                         </group>
                         <group>
                             <field name="loan_term"/>

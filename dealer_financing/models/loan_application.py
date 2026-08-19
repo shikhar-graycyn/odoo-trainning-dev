@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class LoanApplication(models.Model):
@@ -9,6 +9,8 @@ class LoanApplication(models.Model):
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True
     )
+    email = fields.Char(string="Email", related="partner_id.email")
+    phone = fields.Char(string="Phone", related="partner_id.phone")
     user_id = fields.Many2one(
         comodel_name="res.users",
         string="Salesperson",
@@ -26,11 +28,17 @@ class LoanApplication(models.Model):
         string="Documents",
     )
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency")
-    loan_amount = fields.Monetary(
-        string="Loan Amount", currency_field="currency_id", required=True
+    principal_amount = fields.Monetary(
+        string="Principal Amount", currency_field="currency_id"
     )
     down_payment = fields.Monetary(
         string="Down Payment", currency_field="currency_id"
+    )
+    loan_amount = fields.Monetary(
+        string="Loan Amount",
+        currency_field="currency_id",
+        compute="_compute_loan_amount",
+        inverse="_inverse_loan_amount",
     )
     loan_term = fields.Integer(string="Term (Months)", default=36)
     interest_rate = fields.Float(
@@ -55,3 +63,12 @@ class LoanApplication(models.Model):
     )
     active = fields.Boolean(default=True)
     notes = fields.Html(string="Internal Notes", copy=False)
+
+    @api.depends("principal_amount", "down_payment")
+    def _compute_loan_amount(self):
+        for record in self:
+            record.loan_amount = record.principal_amount - record.down_payment
+
+    def _inverse_loan_amount(self):
+        for record in self:
+            record.down_payment = record.principal_amount - record.loan_amount
