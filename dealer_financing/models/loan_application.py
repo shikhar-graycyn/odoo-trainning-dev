@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class LoanApplication(models.Model):
@@ -48,6 +48,8 @@ class LoanApplication(models.Model):
     date_applied = fields.Date(
         string="Application Date", default=lambda self: fields.Date.today()
     )
+    date_approved = fields.Date(string="Approval Date", copy=False)
+    date_rejected = fields.Date(string="Rejection Date", copy=False)
     state = fields.Selection(
         selection=[
             ("draft", "Draft"),
@@ -92,3 +94,43 @@ class LoanApplication(models.Model):
                         "Down payment must be less than the principal amount."
                     )
                 )
+
+    def action_submit(self):
+        for record in self:
+            required_documents = record.document_ids.filtered(
+                lambda doc: doc.type_id.is_required
+            )
+            if not required_documents or any(
+                document.state != "approved"
+                for document in required_documents
+            ):
+                raise UserError(
+                    self.env._(
+                        "All required documents must be attached and approved "
+                        "before submitting the loan application."
+                    )
+                )
+            record.write(
+                {
+                    "state": "sent",
+                    "date_applied": fields.Date.today(),
+                }
+            )
+
+    def action_approve_loan(self):
+        for record in self:
+            record.write(
+                {
+                    "state": "approved",
+                    "date_approved": fields.Date.today(),
+                }
+            )
+
+    def action_reject_loan(self):
+        for record in self:
+            record.write(
+                {
+                    "state": "rejected",
+                    "date_rejected": fields.Date.today(),
+                }
+            )

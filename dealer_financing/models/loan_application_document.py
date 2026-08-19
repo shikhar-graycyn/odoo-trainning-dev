@@ -24,3 +24,9 @@ class LoanApplicationDocument(models.Model):
     attachment_id = fields.Many2one(
         comodel_name="ir.attachment", string="Attachment"
     )
+
+    def action_approve_document(self):
+        self.write({"state": "approved"})
+
+    def action_reject_document(self):
+        self.write({"state": "rejected"})
