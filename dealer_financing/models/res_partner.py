@@ -7,7 +7,7 @@ class ResPartner(models.Model):
     loan_application_ids = fields.One2many(
         comodel_name="loan.application",
         inverse_name="partner_id",
-        string="Loan Applications",
+        string="Loan Application Records",
     )
     loan_application_count = fields.Integer(
         string="Loan Applications",
