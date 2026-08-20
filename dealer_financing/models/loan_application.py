@@ -108,6 +108,11 @@ class LoanApplication(models.Model):
         for record in self:
             record.down_payment = record.principal_amount - record.loan_amount
 
+    @api.onchange("loan_amount")
+    def _onchange_loan_amount(self):
+        for record in self:
+            record.down_payment = record.principal_amount - record.loan_amount
+
     @api.constrains("principal_amount", "down_payment")
     def _check_down_payment(self):
         for record in self:
