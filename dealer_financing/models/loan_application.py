@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class LoanApplication(models.Model):
     _name = "loan.application"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Loan Application"
 
     name = fields.Char(string="Application Number", required=True)
@@ -30,7 +31,9 @@ class LoanApplication(models.Model):
     )
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency")
     principal_amount = fields.Monetary(
-        string="Principal Amount", currency_field="currency_id"
+        string="Principal Amount",
+        currency_field="currency_id",
+        tracking=True,
     )
     down_payment = fields.Monetary(
         string="Down Payment", currency_field="currency_id"
@@ -63,6 +66,7 @@ class LoanApplication(models.Model):
         string="Status",
         default="draft",
         copy=False,
+        tracking=True,
     )
     active = fields.Boolean(default=True)
     notes = fields.Html(string="Internal Notes", copy=False)
@@ -134,6 +138,12 @@ class LoanApplication(models.Model):
                     "state": "sent",
                     "date_applied": fields.Date.today(),
                 }
+            )
+            record.message_post(
+                body=record.env._(
+                    "Application successfully submitted for review!"
+                ),
+                subtype_xmlid="mail.mt_note",
             )
 
     def action_approve_loan(self):
