@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -75,6 +75,25 @@ class LoanApplication(models.Model):
         "CHECK(principal_amount > 0)",
         "Principal amount must be greater than zero.",
     )
+
+    @api.model
+    def _get_default_document_types(self):
+        return self.env["loan.application.document.type"].search([])
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        document_types = self._get_default_document_types()
+        for vals in vals_list:
+            existing_document_commands = vals.get("document_ids", [])
+            generated_document_commands = [
+                Command.create({"type_id": doc_type.id})
+                for doc_type in document_types
+            ]
+            vals["document_ids"] = [
+                *existing_document_commands,
+                *generated_document_commands,
+            ]
+        return super().create(vals_list)
 
     @api.depends("principal_amount", "down_payment")
     def _compute_loan_amount(self):
