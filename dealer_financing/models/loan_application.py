@@ -11,8 +11,8 @@ class LoanApplication(models.Model):
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True
     )
-    email = fields.Char(string="Email", related="partner_id.email")
-    phone = fields.Char(string="Phone", related="partner_id.phone")
+    email = fields.Char(related="partner_id.email")
+    phone = fields.Char(related="partner_id.phone")
     user_id = fields.Many2one(
         comodel_name="res.users",
         string="Salesperson",
@@ -31,8 +31,6 @@ class LoanApplication(models.Model):
     )
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency")
     principal_amount = fields.Monetary(
-        string="Principal Amount",
-        currency_field="currency_id",
         tracking=True,
     )
     down_payment = fields.Monetary(
@@ -73,12 +71,36 @@ class LoanApplication(models.Model):
 
     _name_unique = models.Constraint(
         "unique(name)",
-        "Loan application reference must be unique.",
+        "Application number must be unique.",
     )
-    _principal_positive = models.Constraint(
+    _check_principal_positive = models.Constraint(
         "CHECK(principal_amount > 0)",
         "Principal amount must be greater than zero.",
     )
+
+    @api.depends("principal_amount", "down_payment")
+    def _compute_loan_amount(self):
+        for record in self:
+            record.loan_amount = record.principal_amount - record.down_payment
+
+    def _inverse_loan_amount(self):
+        for record in self:
+            record.down_payment = record.principal_amount - record.loan_amount
+
+    @api.onchange("loan_amount")
+    def _onchange_loan_amount(self):
+        self.down_payment = self.principal_amount - self.loan_amount
+
+    @api.constrains("principal_amount", "down_payment")
+    def _check_down_payment(self):
+        if any(
+            record.down_payment >= record.principal_amount for record in self
+        ):
+            raise ValidationError(
+                self.env._(
+                    "Down payment must be less than the principal amount."
+                )
+            )
 
     @api.model
     def _get_default_document_types(self):
@@ -99,31 +121,8 @@ class LoanApplication(models.Model):
             ]
         return super().create(vals_list)
 
-    @api.depends("principal_amount", "down_payment")
-    def _compute_loan_amount(self):
-        for record in self:
-            record.loan_amount = record.principal_amount - record.down_payment
-
-    def _inverse_loan_amount(self):
-        for record in self:
-            record.down_payment = record.principal_amount - record.loan_amount
-
-    @api.onchange("loan_amount")
-    def _onchange_loan_amount(self):
-        for record in self:
-            record.down_payment = record.principal_amount - record.loan_amount
-
-    @api.constrains("principal_amount", "down_payment")
-    def _check_down_payment(self):
-        for record in self:
-            if record.down_payment >= record.principal_amount:
-                raise ValidationError(
-                    self.env._(
-                        "Down payment must be less than the principal amount."
-                    )
-                )
-
     def action_submit(self):
+        records_to_message = self.env["loan.application"]
         for record in self:
             required_documents = record.document_ids.filtered(
                 lambda doc: doc.type_id.is_required
@@ -144,27 +143,28 @@ class LoanApplication(models.Model):
                     "date_applied": fields.Date.today(),
                 }
             )
+            records_to_message |= record
+
+        for record in records_to_message:
             record.message_post(
-                body=record.env._(
+                body=self.env._(
                     "Application successfully submitted for review!"
                 ),
                 subtype_xmlid="mail.mt_note",
             )
 
     def action_approve_loan(self):
-        for record in self:
-            record.write(
-                {
-                    "state": "approved",
-                    "date_approved": fields.Date.today(),
-                }
-            )
+        self.write(
+            {
+                "state": "approved",
+                "date_approved": fields.Date.today(),
+            }
+        )
 
     def action_reject_loan(self):
-        for record in self:
-            record.write(
-                {
-                    "state": "rejected",
-                    "date_rejected": fields.Date.today(),
-                }
-            )
+        self.write(
+            {
+                "state": "rejected",
+                "date_rejected": fields.Date.today(),
+            }
+        )

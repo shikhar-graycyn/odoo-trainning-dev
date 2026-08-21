@@ -26,7 +26,7 @@ class LoanApplicationDocument(models.Model):
     )
 
     def action_approve_document(self):
-        self.write({"state": "approved"})
+        self.state = "approved"
 
     def action_reject_document(self):
-        self.write({"state": "rejected"})
+        self.state = "rejected"
