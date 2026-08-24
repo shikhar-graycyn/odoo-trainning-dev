@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "author": "ODOP Trainee",
     "maintainer": "Shikhar-GC",
-    "depends": ["product", "contacts"],
+    "depends": ["product"],
     "data": [
         "security/dealer_financing_groups.xml",
         "security/ir.model.access.csv",
@@ -13,7 +13,6 @@
         "views/loan_application_views.xml",
         "views/loan_application_tag_views.xml",
         "views/loan_application_document_type_views.xml",
-        "views/res_partner_views.xml",
         "views/dealer_financing_menu.xml",
     ],
     "demo": [
