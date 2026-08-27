@@ -26,6 +26,6 @@ class ResPartner(models.Model):
             "name": self.env._("Loan Applications"),
             "res_model": "loan.application",
             "view_mode": "list,form",
-            "domain": [("partner_id", "=", self.id)],
+            "domain": [("id", "in", self.loan_application_ids.ids)],
             "context": {"default_partner_id": self.id},
         }

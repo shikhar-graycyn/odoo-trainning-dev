@@ -15,7 +15,6 @@ class TestLoanApplication(TransactionCase):
             {
                 "name": "Dealer Financing Test Required Document",
                 "is_required": True,
-                "active": True,
             }
         )
 
