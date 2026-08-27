@@ -30,15 +30,4 @@
             </div>
         </field>
     </record>
-
-    <record id="loan_application_form_view" model="ir.ui.view">
-        <field name="name">loan.application.form.inherit.sale</field>
-        <field name="model">loan.application</field>
-        <field name="inherit_id" ref="dealer_financing.view_loan_application_form"/>
-        <field name="arch" type="xml">
-            <field name="partner_id" position="after">
-                <field name="sale_order_id"/>
-            </field>
-        </field>
-    </record>
 </odoo>

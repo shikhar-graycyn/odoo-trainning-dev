@@ -23,8 +23,7 @@ class SaleOrder(models.Model):
     def action_create_loan(self):
         self.ensure_one()
         financeable_lines = self.order_line.filtered(
-            lambda line: line.product_id
-            and line.product_id.product_tmpl_id.is_financeable
+            lambda line: line.product_id.product_tmpl_id.is_financeable
         )
 
         if not financeable_lines:

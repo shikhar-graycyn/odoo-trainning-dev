@@ -12,6 +12,7 @@
     "data": [
         "views/product_template_views.xml",
         "views/sale_order_views.xml",
+        "views/loan_application_views.xml",
     ],
     "license": "OPL-1",
     "application": False,
